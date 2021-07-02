@@ -3,12 +3,21 @@ package app.jimalvess.v1.diario;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import app.jimalvess.v1.diario.dao.AnotacaoDAO;
 import app.jimalvess.v1.diario.modelo.Anotacao;
@@ -19,6 +28,12 @@ public class FormularioActivity extends AppCompatActivity {
     //Seta um atributo helper nosso:
     private FormularioHelper helper;
 
+    /////////////// TENTANDO O DATEPICKER ///////////////////
+    EditText editText = findViewById(R.id.formulario_data);
+    final Calendar myCalendar = Calendar.getInstance();
+    //////////// FIM DA TENTATIVA //////////////////////////
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +50,46 @@ public class FormularioActivity extends AppCompatActivity {
         Anotacao anotacao = (Anotacao) intent.getSerializableExtra("anotacao");
 
         //Caso venha sem a anotacao (outra intent que chamou esta activity):
-        if (anotacao != null){
+        if (anotacao != null) {
             //Preenche pra edição:
             helper.preencheFormulario(anotacao);
         }
+
+        /////////////// TENTANDO O DATEPICKER ///////////////////
+        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+        };
+
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(FormularioActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        //////////// FIM DA TENTATIVA //////////////////////////
+
     }
+
+    /////////////// TENTANDO O DATEPICKER ///////////////////
+    private void updateLabel() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        editText.setText(sdf.format(myCalendar.getTime()));
+    }
+//////////// FIM DA TENTATIVA //////////////////////////
 
     //Cria um menu na barra superior:
     @Override
