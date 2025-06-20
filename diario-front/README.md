@@ -3,7 +3,7 @@
 Mexendo nisso por enquanto ;-) 
 Na real, é um diário que tô implementando e incrementando features até ele ficar bem legal. 
 
-Java e React
+Java e React:
 
 - Java 17
 - React 19
