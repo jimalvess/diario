@@ -30,7 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST stateless
-                .cors(cors -> {}) // Habilita CORS configurado no WebConfig (lambda vazia, pois a configuração é no WebConfig)
+                .cors(cors -> {
+                }) // Habilita CORS configurado no WebConfig (lambda vazia, pois a configuração é no WebConfig)
                 .authorizeRequests(auth -> auth // Inicia a configuração de autorização com lambda
                         .antMatchers("/auth/**").permitAll() // Permite acesso público a endpoints de autenticação
                         .antMatchers("/auth/test-email").permitAll() // Permite acesso público a endpoint de teste de email

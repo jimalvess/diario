@@ -21,9 +21,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+// Importar a classe MimeTypes (se não estiver usando)
+// import org.springframework.http.HttpHeaders;
+// import org.springframework.util.MimeType;
+
+// Imports para os logs
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api/entradas")
 public class EntradaDiarioController {
+
+    // Adicione o logger aqui
+    private static final Logger logger = LoggerFactory.getLogger(EntradaDiarioController.class);
 
     @Autowired
     private EntradaDiarioService entradaDiarioService;
@@ -41,30 +52,69 @@ public class EntradaDiarioController {
      * @return ResponseEntity contendo os bytes do arquivo e o tipo de mídia.
      * @throws IOException Se houver um erro ao ler o arquivo.
      */
-    @GetMapping("/arquivo/{nomeArquivo}") // Mudei o path para ser mais genérico para "arquivo"
+    @GetMapping("/arquivo/{nomeArquivo}")
     public ResponseEntity<byte[]> getArquivo(@PathVariable String nomeArquivo) throws IOException {
-        // Constrói o caminho completo do arquivo
         Path filePath = Paths.get(uploadDir, nomeArquivo);
+        logger.info("Tentando servir arquivo: {}", filePath);
 
-        // Verifica se o arquivo existe
         if (!Files.exists(filePath)) {
+            logger.warn("Arquivo não encontrado: {}", filePath);
             return ResponseEntity.notFound().build();
         }
 
-        // Lê todos os bytes do arquivo
         byte[] fileBytes = Files.readAllBytes(filePath);
-        // Tenta determinar o tipo de conteúdo (MIME type) do arquivo
+
         String mimeType = Files.probeContentType(filePath);
+        logger.info("MIME Type detectado por Files.probeContentType: {}", mimeType);
+
         if (mimeType == null) {
-            // Define um tipo de conteúdo padrão se não puder ser determinado
-            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            String fileExtension = "";
+            int dotIndex = nomeArquivo.lastIndexOf('.');
+            if (dotIndex > 0 && dotIndex < nomeArquivo.length() - 1) {
+                fileExtension = nomeArquivo.substring(dotIndex + 1).toLowerCase();
+            }
+
+            switch (fileExtension) {
+                case "pdf":
+                    mimeType = "application/pdf"; break;
+                case "jpg": case "jpeg":
+                    mimeType = "image/jpeg"; break;
+                case "png":
+                    mimeType = "image/png"; break;
+                case "gif":
+                    mimeType = "image/gif"; break;
+                case "mp4":
+                    mimeType = "video/mp4"; break;
+                case "webm":
+                    mimeType = "video/webm"; break;
+                case "mp3":
+                    mimeType = "audio/mpeg"; break;
+                case "wav":
+                    mimeType = "audio/wav"; break;
+                case "doc":
+                    mimeType = "application/msword"; break;
+                case "docx":
+                    mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"; break;
+                case "xls":
+                    mimeType = "application/vnd.ms-excel"; break;
+                case "xlsx":
+                    mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; break;
+                default:
+                    mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; break;
+            }
+
+            logger.info("MIME Type inferido pela extensão (fallback): {}", mimeType);
         }
 
-        // Retorna o arquivo com o tipo de conteúdo correto
+        logger.info("MIME Type FINAL enviado na resposta: {}", mimeType);
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(mimeType))
+                .header("Content-Disposition", "inline; filename=\"" + nomeArquivo + "\"")
                 .body(fileBytes);
     }
+
+
 
     /**
      * Endpoint para listar todas as entradas do diário de um usuário.
@@ -104,10 +154,10 @@ public class EntradaDiarioController {
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EntradaDiarioResponseDTO> criarEntradaComMidias(
-       @RequestPart("titulo") String titulo,
-       @RequestPart("conteudo") String conteudo,
-       @RequestPart(value = "arquivos", required = false) List<MultipartFile> arquivos,
-       Principal principal) {
+            @RequestPart("titulo") String titulo,
+            @RequestPart("conteudo") String conteudo,
+            @RequestPart(value = "arquivos", required = false) List<MultipartFile> arquivos,
+            Principal principal) {
 
         String username = principal.getName();
         Usuario usuario = usuarioService.buscarPorUsername(username)
@@ -168,12 +218,12 @@ public class EntradaDiarioController {
      */
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EntradaDiarioResponseDTO> atualizarEntradaComMidias(
-       @PathVariable Long id,
-       @RequestPart("titulo") String titulo,
-       @RequestPart("conteudo") String conteudo,
-       @RequestPart(value = "novosArquivos", required = false) List<MultipartFile> novosArquivos,
-       @RequestPart(value = "idsMidiasRemover", required = false) List<Long> idsMidiasRemover,
-       Principal principal) {
+            @PathVariable Long id,
+            @RequestPart("titulo") String titulo,
+            @RequestPart("conteudo") String conteudo,
+            @RequestPart(value = "novosArquivos", required = false) List<MultipartFile> novosArquivos,
+            @RequestPart(value = "idsMidiasRemover", required = false) List<Long> idsMidiasRemover,
+            Principal principal) {
 
         String username = principal.getName();
         Usuario usuario = usuarioService.buscarPorUsername(username)

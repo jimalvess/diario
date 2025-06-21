@@ -29,7 +29,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   /* Adicionado para garantir a rolagem vertical da página, caso o conteúdo exceda a viewport */
-  overflow-y: scroll; 
+  overflow-y: scroll;
 }
 
 h1 {
