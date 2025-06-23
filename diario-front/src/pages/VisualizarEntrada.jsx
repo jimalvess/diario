@@ -8,7 +8,6 @@ import {
   Image,
   Popconfirm,
   Modal,
-  Tag,
 } from "antd";
 import {
   EditOutlined,
@@ -177,7 +176,7 @@ const VisualizarEntrada = () => {
   }
 
   return (
-    // O Layout principal deve preencher a tela e ser um flex container para seus filhos
+    // O Layout principal deve preencher a tela e ser um flex container pros seus filhos
     <Layout
       style={{
         minHeight: "100vh",
@@ -189,7 +188,7 @@ const VisualizarEntrada = () => {
       {/* HeaderDiario já está configurado para ser fixo e ter a altura correta */}
       <HeaderDiario />
 
-      {/* O Content agora tem a função principal de ser o container rolável */}
+      {/* O Content tem a função principal de ser o container rolável */}
       <Content
         style={{
           // paddingTop compensa a altura do header fixo + um espaço extra
@@ -210,7 +209,6 @@ const VisualizarEntrada = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center", // Centraliza o Card horizontalmente
-          // Removemos justifyContent para que o conteúdo comece do topo do Content
         }}
       >
         <Card
@@ -222,7 +220,7 @@ const VisualizarEntrada = () => {
             backgroundColor: "rgba(0, 0, 0, 0.6)",
             boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.5)",
             borderRadius: "8px",
-            // Margin auto para centralização horizontal dentro do Content flex
+            // Margin auto pra centralização horizontal dentro do Content flex
             margin: "0 auto",
             marginBottom: "30px",
           }}
@@ -334,7 +332,7 @@ const VisualizarEntrada = () => {
                             Seu navegador não suporta a tag de áudio.
                           </audio>
                         ) : (
-                          // Para documentos
+                          // Pra documentos
                           <div
                             style={{
                               display: "flex",
@@ -422,7 +420,7 @@ const VisualizarEntrada = () => {
         </Card>
       </Content>
 
-      {/* Footer com altura definida para que o Content possa calcular seu espaço */}
+      {/* Footer com altura definida pra que o Content possa calcular seu espaço */}
       <Footer
         style={{
           textAlign: "center",

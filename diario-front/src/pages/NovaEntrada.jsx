@@ -44,10 +44,10 @@ const NovaEntrada = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Handler para cancelar a prévia da imagem
+  // Handler pra cancelar a prévia da imagem
   const handlePreviewCancel = () => setPreviewOpen(false);
 
-  // Handler para pré-visualizar a imagem
+  // Handler pra pré-visualizar a imagem
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -59,7 +59,7 @@ const NovaEntrada = () => {
     );
   };
 
-  // Handler para mudanças na lista de arquivos do Upload
+  // Handler pra mudanças na lista de arquivos do Upload
   const handleChange = ({ fileList: newFileList }) => {
     // Filtra arquivos que excedam o limite de 20MB
     const filteredList = newFileList.filter((file) => {
@@ -98,7 +98,7 @@ const NovaEntrada = () => {
       if (response.status === 200) {
         message.success("Entrada criada com sucesso!");
         setFileList([]); // Limpa os arquivos após o sucesso
-        navigate("/entradas"); // Redireciona para a lista de entradas
+        navigate("/entradas"); // Redireciona pra lista de entradas
       } else {
         console.warn("Status inesperado:", response);
         message.error("Erro ao criar entrada.");
@@ -205,7 +205,7 @@ const NovaEntrada = () => {
                     fileList={fileList}
                     onPreview={handlePreview} // Para exibir prévia de imagens
                     onChange={handleChange} // Lida com adição/remoção de arquivos
-                    beforeUpload={() => false} // Evita upload automático do Ant Design
+                    beforeUpload={() => false} // Evita upload automático
                     multiple // Permite múltiplos arquivos
                     accept="image/*,video/*,audio/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" // Aceita múltiplos tipos
                   >

@@ -61,7 +61,7 @@ const Entradas = () => {
     fetchEntradas();
   }, []);
 
-  // Handlers para ações da tabela
+  // Handlers pra ações da tabela
   const handleVer = (id) => {
     navigate(`/entradas/${id}`);
   };
@@ -173,7 +173,7 @@ const Entradas = () => {
           paddingTop: "84px", // Distância do cabeçalho
         }}
       >
-        {/* Container para o botão e a tabela, para limitar a largura e aplicar sombra */}
+        {/* Container pro botão e a tabela, pra limitar a largura e aplicar sombra */}
         <div
           style={{
             width: "100%",

@@ -7,17 +7,14 @@ import {
   Upload,
   message,
   Card,
-  Image, // Pra exibir a imagem
+  Image,
   Row,
   Col,
   Modal, // Pra prévia de imagem
-  Space, // Pro espaçamento de botões/elementos
-  Tag, // Pra exibir tags de mídia
   Tooltip, // Pro o botão de remover mídia
   Typography, // Adicionado para Title
 } from "antd";
 import {
-  UploadOutlined,
   SaveOutlined,
   CloseOutlined,
   PlusOutlined,
@@ -49,12 +46,12 @@ const EditarEntrada = () => {
   const [loading, setLoading] = useState(true); // Estado de carregamento da página
   const [submitLoading, setSubmitLoading] = useState(false); // Estado de carregamento do formulário ao submeter
 
-  // Estados para mídias
+  // Estados pras mídias
   const [existingMedia, setExistingMedia] = useState([]); // Mídias já salvas no backend
   const [newFiles, setNewFiles] = useState([]); // Novos arquivos pra serem adicionados
   const [mediaToRemoveIds, setMediaToRemoveIds] = useState(new Set()); // IDs das mídias pra serem removidas
 
-  // Estados para o modal de pré-visualização (agora usado para novas e existentes)
+  // Estados proo modal de pré-visualização (novas e existentes)
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewContentUrl, setPreviewContentUrl] = useState("");
   const [previewModalTitle, setPreviewModalTitle] = useState("");
@@ -64,14 +61,14 @@ const EditarEntrada = () => {
   const token = localStorage.getItem("token");
   const API_BASE_URL = "http://localhost:8080";
 
-  // Handler para cancelar a prévia do modal
+  // Handler pra cancelar a prévia do modal
   const handlePreviewModalCancel = () => {
     setPreviewOpen(false);
     setPreviewContentUrl("");
     setPreviewModalTitle("");
   };
 
-  // Handler para pré-visualizar NOVOS arquivos (Upload do Ant)
+  // Handler pra pré-visualizar NOVOS arquivos (Upload do Ant)
   const handleNewFilePreview = async (file) => {
     if (!file.url && !file.preview && file.originFileObj) {
       file.preview = await getBase64(file.originFileObj);
@@ -86,14 +83,14 @@ const EditarEntrada = () => {
     );
   };
 
-  // Handler para pré-visualizar MÍDIAS EXISTENTES
+  // Handler pra pré-visualizar MÍDIAS EXISTENTES
   const handleExistingMediaPreview = (url, name, type) => {
     setPreviewContentUrl(url);
     setPreviewModalTitle(name);
     setPreviewOpen(true);
   };
 
-  // Handler para mudanças nos novos arquivos (Upload do Ant)
+  // Handler pra mudanças nos novos arquivos (Upload do Ant)
   const handleChangeNewFiles = ({ fileList: newFileList }) => {
     const filteredList = newFileList.filter((file) => {
       const isLt20M = file.size / 1024 / 1024 < 20; // Limite de 20MB por arquivo
@@ -105,7 +102,7 @@ const EditarEntrada = () => {
     setNewFiles(filteredList);
   };
 
-  // Handler para remover uma mídia existente
+  // Handler pra remover uma mídia existente
   const handleRemoveExistingMedia = (mediaId) => {
     setExistingMedia((prev) =>
       prev.filter((media) => media.uid !== mediaId.toString())
@@ -148,8 +145,8 @@ const EditarEntrada = () => {
                 : null;
 
               return {
-                uid: media.id.toString(), // UID deve ser string
-                name: media.nomeOriginalArquivo || "arquivo-desconhecido", // Fallback para nome
+                uid: media.id.toString(), // UID tem que ser string
+                name: media.nomeOriginalArquivo || "arquivo-desconhecido", // Fallback pro nome
                 status: "done",
                 url: mediaUrl,
                 response: media, // Guarda o objeto original da mídia
@@ -176,9 +173,9 @@ const EditarEntrada = () => {
     }
   }, [id, token, navigate, form, API_BASE_URL]);
 
-  // --- Handler para submissão do formulário (Atualizar) ---
+  // --- Handler pra submissão do formulário (Atualizar) ---
   const onFinish = async (values) => {
-    setSubmitLoading(true); // Ativa loading para o botão de submissão
+    setSubmitLoading(true); // Ativa loading pro botão de submissão
     try {
       const formData = new FormData();
       formData.append("titulo", values.titulo);
@@ -230,11 +227,11 @@ const EditarEntrada = () => {
     }
   };
 
-  // Props para o componente Upload de novos arquivos
+  // Props pro componente Upload de novos arquivos
   const newUploadProps = {
     listType: "picture-card",
     fileList: newFiles,
-    onPreview: handleNewFilePreview, // Usa o novo handler para novos arquivos
+    onPreview: handleNewFilePreview, // Usa o novo handler pra novos arquivos
     onChange: handleChangeNewFiles,
     beforeUpload: () => false, // Evita upload automático
     multiple: true,
@@ -580,7 +577,7 @@ const EditarEntrada = () => {
               style={{ width: "100%", height: "70vh", border: "none" }}
             />
           ) : (
-            // Para outros tipos de documentos, ou visualização de imagem normal
+            // Pra outros tipos de documentos, ou visualização de imagem normal
             <img
               alt="prévia"
               style={{

@@ -67,7 +67,7 @@ const ResetPassword = () => {
   const handleOk = () => {
     setIsModalVisible(false);
 
-    // Delay para que o modal feche antes de redirecionar
+    // Delay pra que o modal feche antes de redirecionar
     setTimeout(() => {
       console.log("Redirecionando para /login...");
       navigate("/login");

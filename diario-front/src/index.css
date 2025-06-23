@@ -24,11 +24,8 @@ a:hover {
 
 body {
   margin: 0;
-  /* REMOVIDO: display: flex; - Esta linha estava causando a centralização global indesejada */
-  /* REMOVIDO: place-items: center; - Esta linha também contribuía para a centralização global */
   min-width: 320px;
   min-height: 100vh;
-  /* Adicionado para garantir a rolagem vertical da página, caso o conteúdo exceda a viewport */
   overflow-y: scroll;
 }
 

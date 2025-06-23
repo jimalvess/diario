@@ -13,7 +13,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 // --- Definição do Tema Escuro Suave ---
 const softDarkTheme = {
-  algorithm: theme.darkAlgorithm, // Algoritmo de tema escuro do Ant Design
+  algorithm: theme.darkAlgorithm, // Algoritmo de tema escuro do Ant
   token: {
     colorPrimary: "#3498db",
     colorSuccess: "#2ecc71",
@@ -74,7 +74,7 @@ const softDarkTheme = {
 
 const App = () => {
   return (
-    // ConfigProvider envolve toda a aplicação para aplicar o tema softDarkTheme
+    // ConfigProvider envolve toda a aplicação pra aplicar o tema softDarkTheme
     <ConfigProvider theme={softDarkTheme}>
       <Router>
         <Routes>
