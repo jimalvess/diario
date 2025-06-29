@@ -1,30 +1,29 @@
-# Estagio 1: Build da aplicacao Java no Maven (Java 17):
-FROM maven:3.9.6-openjdk-17 AS build
+# Estagio 1: Build em Java 17 e Maven:
+FROM maven:3.9.6-sapmachine-17-full AS build # <--- ALTERADO AQUI
 
-# Define o diretório de trabalho no container pro build
+# Define o diretorio de trabalho no container para o build
 WORKDIR /app
 
-# Copia o arquivo pom.xml pro Maven pra baixar as dependencias
+# Copia o arquivo pom.xml pro Maven possa baixar as dependências
 COPY pom.xml .
 
-# Copia o restante do código-fonte
+# Copia o restante do código fonte
 COPY src ./src
 
-# Faz o build do Maven e gera o WAR
-# O '-DskipTests' faz builds mais rapidos em CI/CD
+# Gera o WAR
 RUN mvn clean install -DskipTests
 
-# Estagio 2: Roda a aplicacao num Tomcat leve
+# Estagio 2: Roda a aplicacao num Tomcat leve (Java 11 e Tomcat 9)
 FROM tomcat:9.0-jdk11-openjdk
 
-# Tira a aplicacao de exemplo que vem no Tomcat
+# Tira a aplicacao de exemplo que vem com o Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
 # Copia o arquivo .war pro Tomcat
 COPY --from=build /app/target/diario-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
-# Abre porta 8080 padrão do Tomcat
+# Expoe a porta 8080 padrão do Tomcat
 EXPOSE 8080
 
-# Inicia o Tomcat quando o container for executado
+# Iniciar o Tomcat quando o container for executado
 CMD ["catalina.sh", "run"]
