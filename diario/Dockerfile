@@ -1,16 +1,30 @@
-# Usa uma imagem docker base que ja tem Java 11 e Tomcat 9
+# Estagio 1: Build da aplicacao Java no Maven (Java 17):
+FROM maven:3.9.6-openjdk-17 AS build
+
+# Define o diretório de trabalho no container pro build
+WORKDIR /app
+
+# Copia o arquivo pom.xml pro Maven pra baixar as dependencias
+COPY pom.xml .
+
+# Copia o restante do código-fonte
+COPY src ./src
+
+# Faz o build do Maven e gera o WAR
+# O '-DskipTests' faz builds mais rapidos em CI/CD
+RUN mvn clean install -DskipTests
+
+# Estagio 2: Roda a aplicacao num Tomcat leve
 FROM tomcat:9.0-jdk11-openjdk
 
-# Remove a aplicacao de exemplo que vem no Tomcat e usa a minha:
+# Tira a aplicacao de exemplo que vem no Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
-# Copia o arquivo .war praa pasta webapps do Tomcat.
-# 'ROOT.war' faz com que a aplicacao fique acessivel diretamente na raiz da URL.
-COPY target/diario-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+# Copia o arquivo .war pro Tomcat
+COPY --from=build /app/target/diario-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
-# Expoe a porta padrao do Tomcat pras requisicoes.
+# Abre porta 8080 padrão do Tomcat
 EXPOSE 8080
 
-# Define o comando que vai ser executado quando o container for iniciado.
-# 'catalina.sh run' inicia o Tomcat.
+# Inicia o Tomcat quando o container for executado
 CMD ["catalina.sh", "run"]
