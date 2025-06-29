@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             // Verifica se o cabeçalho de autorização está presente e começa com "Bearer "
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7).trim(); // E remove o "Bearer "
+                token = authHeader.substring(7).trim(); // Aí tiro o "Bearer "
 
                 if (token.isEmpty()) {
                     logger.warn("Token JWT vazio no header para a requisição: {}", request.getRequestURI());

@@ -28,7 +28,7 @@ public class Usuario implements UserDetails, EmailAware {
 
     private String nome;
 
-    private String username; // Eu uso como identificador principal para autenticação
+    private String username; // Eu uso como identificador principal pra autenticação
 
     private String senha;
 

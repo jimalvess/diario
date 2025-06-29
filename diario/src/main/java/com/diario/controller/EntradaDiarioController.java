@@ -5,12 +5,14 @@ import com.diario.model.EntradaDiario;
 import com.diario.model.Usuario;
 import com.diario.service.EntradaDiarioService;
 import com.diario.service.UsuarioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,19 +23,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-// Importar a classe MimeTypes (se não estiver usando)
-// import org.springframework.http.HttpHeaders;
-// import org.springframework.util.MimeType;
-
-// Imports para os logs
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @RestController
 @RequestMapping("/api/entradas")
 public class EntradaDiarioController {
 
-    // Adicione o logger aqui
     private static final Logger logger = LoggerFactory.getLogger(EntradaDiarioController.class);
 
     @Autowired
@@ -48,6 +41,7 @@ public class EntradaDiarioController {
 
     /**
      * Endpoint para servir arquivos estáticos (imagens, vídeos, áudios, documentos).
+     *
      * @param nomeArquivo O nome do arquivo a ser recuperado.
      * @return ResponseEntity contendo os bytes do arquivo e o tipo de mídia.
      * @throws IOException Se houver um erro ao ler o arquivo.
@@ -76,31 +70,45 @@ public class EntradaDiarioController {
 
             switch (fileExtension) {
                 case "pdf":
-                    mimeType = "application/pdf"; break;
-                case "jpg": case "jpeg":
-                    mimeType = "image/jpeg"; break;
+                    mimeType = "application/pdf";
+                    break;
+                case "jpg":
+                case "jpeg":
+                    mimeType = "image/jpeg";
+                    break;
                 case "png":
-                    mimeType = "image/png"; break;
+                    mimeType = "image/png";
+                    break;
                 case "gif":
-                    mimeType = "image/gif"; break;
+                    mimeType = "image/gif";
+                    break;
                 case "mp4":
-                    mimeType = "video/mp4"; break;
+                    mimeType = "video/mp4";
+                    break;
                 case "webm":
-                    mimeType = "video/webm"; break;
+                    mimeType = "video/webm";
+                    break;
                 case "mp3":
-                    mimeType = "audio/mpeg"; break;
+                    mimeType = "audio/mpeg";
+                    break;
                 case "wav":
-                    mimeType = "audio/wav"; break;
+                    mimeType = "audio/wav";
+                    break;
                 case "doc":
-                    mimeType = "application/msword"; break;
+                    mimeType = "application/msword";
+                    break;
                 case "docx":
-                    mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"; break;
+                    mimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    break;
                 case "xls":
-                    mimeType = "application/vnd.ms-excel"; break;
+                    mimeType = "application/vnd.ms-excel";
+                    break;
                 case "xlsx":
-                    mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; break;
+                    mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    break;
                 default:
-                    mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; break;
+                    mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+                    break;
             }
 
             logger.info("MIME Type inferido pela extensão (fallback): {}", mimeType);
@@ -114,11 +122,10 @@ public class EntradaDiarioController {
                 .body(fileBytes);
     }
 
-
-
     /**
      * Endpoint para listar todas as entradas do diário de um usuário.
      * Requer autenticação (Principal).
+     *
      * @param principal Objeto Principal que representa o usuário autenticado.
      * @return Lista de DTOs das entradas do diário do usuário.
      */
@@ -131,7 +138,7 @@ public class EntradaDiarioController {
 
         List<EntradaDiario> entradas = entradaDiarioService.listarEntradasPorUsuario(usuario.getId());
 
-        // Converte as entidades para DTOs pra não expor detalhes internos do modelo
+        // Converte as entidades para DTOs pra não mostrar detalhes internos do modelo
         List<EntradaDiarioResponseDTO> dtos = entradas.stream()
                 .map(EntradaDiarioResponseDTO::new)
                 .toList();
@@ -146,9 +153,10 @@ public class EntradaDiarioController {
 
     /**
      * Endpoint para criar uma nova entrada no diário com suporte a múltiplos arquivos de mídia.
-     * @param titulo O título  da entrada.
-     * @param conteudo O conteúdo textual da entrada.
-     * @param arquivos Lista de arquivos de mídia (imagem, vídeo, áudio, documento) a serem anexados.
+     *
+     * @param titulo    O título  da entrada.
+     * @param conteudo  O conteúdo textual da entrada.
+     * @param arquivos  Lista de arquivos de mídia (imagem, vídeo, áudio, documento) a serem anexados.
      * @param principal Objeto Principal que representa o usuário autenticado.
      * @return A entrada do diário salva, incluindo as mídias anexadas, como DTO.
      */
@@ -169,10 +177,10 @@ public class EntradaDiarioController {
         entrada.setData(LocalDate.now());
         entrada.setUsuario(usuario);
 
-        // Salva a entrada principal primeiro para obter um ID
+        // Salva a entrada principal primeiro para ganhar um ID
         EntradaDiario entradaSalva = entradaDiarioService.criarEntrada(entrada, usuario.getId());
 
-        // Se houver arquivos, processa e anexa
+        // Se tiver arquivos, processa e anexa
         if (arquivos != null && !arquivos.isEmpty()) {
             for (MultipartFile file : arquivos) {
                 if (!file.isEmpty()) {
@@ -185,7 +193,7 @@ public class EntradaDiarioController {
                 }
             }
         }
-        // Tem que buscar a entrada novamente pra garantir que a lista 'midias' esteja populada (se fetch = LAZY)
+        // Tem que buscar a entrada novamente pra garantir que a lista 'midias' esteja populada
         // E converter para DTO antes de retornar
         return ResponseEntity.ok(entradaDiarioService.buscarPorId(entradaSalva.getId())
                 .map(EntradaDiarioResponseDTO::new) // Converte para DTO
@@ -194,6 +202,7 @@ public class EntradaDiarioController {
 
     /**
      * Endpoint para buscar uma entrada específica por ID.
+     *
      * @param id O ID da entrada a ser buscada.
      * @return A entrada do diário se encontrada, ou 404 Not Found, como DTO.
      */
@@ -208,12 +217,13 @@ public class EntradaDiarioController {
 
     /**
      * Endpoint para atualizar uma entrada existente no diário, com suporte a adição/remoção de mídias.
-     * @param id O ID da entrada a ser atualizada.
-     * @param titulo O novo título da entrada.
-     * @param conteudo O novo conteúdo da entrada.
-     * @param novosArquivos Opcional: lista de novos arquivos de mídia a serem adicionados.
+     *
+     * @param id               O ID da entrada a ser atualizada.
+     * @param titulo           O novo título da entrada.
+     * @param conteudo         O novo conteúdo da entrada.
+     * @param novosArquivos    Opcional: lista de novos arquivos de mídia a serem adicionados.
      * @param idsMidiasRemover Opcional: lista de IDs de mídias existentes a serem removidas.
-     * @param principal Objeto Principal que representa o usuário autenticado.
+     * @param principal        Objeto Principal que representa o usuário autenticado.
      * @return A entrada do diário atualizada, incluindo as mídias, como DTO.
      */
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -278,7 +288,8 @@ public class EntradaDiarioController {
     /**
      * Endpoint para deletar uma entrada do diário por ID.
      * Verifica se o usuário autenticado é o proprietário da entrada antes de deletar.
-     * @param id O ID da entrada a ser deletada.
+     *
+     * @param id        O ID da entrada a ser deletada.
      * @param principal Objeto Principal que representa o usuário autenticado.
      * @return Resposta sem conteúdo (204 No Content) se a deleção for bem-sucedida,
      * 404 Not Found se a entrada não existir, ou 403 Forbidden se o usuário não for o dono.
@@ -298,7 +309,7 @@ public class EntradaDiarioController {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         if (!entrada.getUsuario().getId().equals(usuario.getId())) {
-            return ResponseEntity.status(403).build(); // Forbidden
+            return ResponseEntity.status(403).build(); // Forbidden, meu chapa
         }
 
         entradaDiarioService.deletarEntrada(id);
@@ -308,6 +319,7 @@ public class EntradaDiarioController {
 
     /**
      * Método auxiliar para inferir o tipo de arquivo com base no Content-Type.
+     *
      * @param file O MultipartFile.
      * @return Uma string representando o tipo de arquivo (ex: "imagem", "video", "documento_pdf").
      */

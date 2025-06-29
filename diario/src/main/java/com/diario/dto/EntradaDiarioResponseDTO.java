@@ -26,7 +26,7 @@ public class EntradaDiarioResponseDTO {
     // Lista de mídias, usando o MidiaEntradaDTO
     private List<MidiaEntradaDTO> midias;
 
-    // Construtor para mapear de EntradaDiario (entidade) para EntradaDiarioResponseDTO
+    // Construtor para mapear de EntradaDiario (entidade) pra EntradaDiarioResponseDTO
     public EntradaDiarioResponseDTO(EntradaDiario entrada) {
         this.id = entrada.getId();
         this.data = entrada.getData();

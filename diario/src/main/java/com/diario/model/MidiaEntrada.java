@@ -1,7 +1,7 @@
 package com.diario.model;
 
-import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,7 +21,7 @@ public class MidiaEntrada {
     private EntradaDiario entradaDiario;
 
     @Column(name = "tipo_arquivo", nullable = false, length = 50)
-    private String tipoArquivo; // 'video', 'audio', 'documento_word', 'documento_pdf', 'imagem'
+    private String tipoArquivo;
 
     @Column(name = "caminho_arquivo", nullable = false, length = 255)
     private String caminhoArquivo; // Caminho no local ou nuvem
